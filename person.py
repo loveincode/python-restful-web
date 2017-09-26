@@ -11,6 +11,8 @@ from flask import Flask,jsonify,abort,make_response,request
 #cors 跨域访问
 from flask_cors import *
 
+#日志
+import logging
 
 app = Flask(__name__);
 CORS(app, supports_credentials=True);
