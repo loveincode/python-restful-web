@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+
+body{
+
+	text-align:center
+	
+}
+
+</style>
+<body>
+
+name:
+<br/><input type = "text" id="name"></input>
+<br/>
+age:<br/><input type = "text" id="age"></input>
+<br/>
+url:<br/><input type = "text" id="url"></input>
+<br/>
+<br/>
+<input type="button" value="getall" id="getall" onclick="getpersons()" />
+<br/>
+id : <input type = "text" id="id"></input>
+<input type="button" value="getone" id="getone" onclick="getperson()" />
+<br/>
+<input type="button" value="post" id="post" onclick="postperson()" />
+<br/>
+put id : <input type = "text" id="putid"></input>
+<input type="button" value="put" id="put" onclick="putperson()"/>
+<br/>
+delete id : <input type = "text" id="deleteid"></input>
+<input type="button" value="delete" id="delete" onclick="deleteperson()"/>
+<br/>
+<br/>
+<textarea id="jsondata"  style="width:500px;height:300px;">
+
+</textarea>
+
+<script src="js/jquery-1.12.4.js"></script>
+
+<script>
+	//ip 替换为你服务器的ip地址
+    function getpersons() {
+		console.log("初始拿persons json");
+        $.ajax({
+			type: 'GET',
+            url: "http://ip:5000/restful/persons",
+			dataType: "json",
+            success: function(data){
+
+				var data = data;
+                
+                persons = data.persons;
+				var sum = "";
+				for(var i = 0;i<persons.length;i++){
+					console.log(persons[i]);
+					sum +=" id: "+persons[i].id +" name: "+persons[i].name +" age: "+ persons[i].age +" url: "+ persons[i].url +"\n\r";
+				}
+				$("#jsondata").text(sum)
+            },
+            error:function () {
+                alert("error");
+
+            }
+        });
+    }
+	getpersons();
+	
+	function getperson() {
+		console.log("person json");
+        $.ajax({
+			type: 'GET',
+            url: "http://ip:5000/restful/person/"+$("#id").val(),
+			dataType: "json",
+            success: function(data){
+				var data = data;
+                person = data.person;
+				var sum = "";
+				sum += " id: "+person.id +" name: "+person.name +" age: "+ person.age +" url: "+ person.url +"\n\r";
+				$("#jsondata").text(sum)
+            },
+            error:function () {
+                alert("error");
+            }
+        });
+    }
+	
+	function postperson(){
+		console.log("Post 增加person");
+		console.log(JSON.stringify({ 
+				name : $("#name").val(),
+				age:$("#age").val(),
+				url:$("#url").val(),
+			}));
+		$.ajax({
+			type : "POST",
+			url : "http://ip:5000/restful/person",
+			data : { 			
+				name : $("#name").val(),
+				age:$("#age").val(),
+				url:$("#url").val(),
+			},
+			dataType : "json",
+			success : function(data) {
+	            console.log(data);
+				getpersons();
+			},
+			error : function(data) {
+				console.log(data);
+				alert("error");
+			}
+		});
+	}
+	
+	function putperson(){
+		console.log("put 修改person");
+		$.ajax({
+			type : "PUT",
+			url : "http://ip:5000/restful/person/"+$("#putid").val(),
+			data : { 
+				name : $("#name").val(),
+				age:$("#age").val(),
+				url:$("#url").val(),
+			},
+			dataType : "json",
+			success : function(data) {
+	            console.log(data);
+				getpersons();
+			},
+			error : function(data) {
+				console.log(data);
+				alert("error");
+			}
+		});
+	}
+
+	function deleteperson(){
+		console.log("delete 删除person");
+		$.ajax({
+			type: 'DELETE',
+			url : "http://ip:5000/restful/person/"+$("#deleteid").val(),
+			dataType : "json",
+
+			success : function(data) {
+	            console.log(data);
+				getpersons();
+			},
+			error : function(data) {
+				console.log(data);
+				alert("error");
+			}
+		});
+	}
+	
+</script>
+</body>
+</html>
