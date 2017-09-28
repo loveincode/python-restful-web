@@ -40,27 +40,30 @@ persons = [
 ]
 
 # curl -i http://localhost:5000/restful/persons
+# curl -i -X GET http://localhost:5000/restful/persons
 @app.route('/restful/persons', methods=['GET'])
 def get_persons():
     app.logger.info('enter get_persons');
-    response = make_response(jsonify({'persons': persons}));
-    response.headers['Access-Control-Allow-Origin'] = '*';
-    response.headers['Access-Control-Allow-Methods'] = 'GET';
-    return response;
-    #return jsonify({'persons': persons})
+    #response = make_response(jsonify({'persons': persons}));
+    #response.headers['Access-Control-Allow-Origin'] = '*';
+    #response.headers['Access-Control-Allow-Methods'] = 'GET';
+    #return response;
+    return jsonify({'persons': persons})
 
-# curl -i http://localhost:5000/restful/person/2
+# curl -i -X GET  http://localhost:5000/restful/person/2
 @app.route('/restful/person/<int:id>', methods=['GET'])
 def get_person(id):
     app.logger.info('enter get_person');
     person = filter(lambda t: t['id'] == id, persons)
     if len(person) == 0:
         abort(404)
-    response = make_response(jsonify({'person': person[0]}));
-    response.headers['Access-Control-Allow-Origin'] = '*';
-    response.headers['Access-Control-Allow-Methods'] = 'GET';
-    return response;
+    #response = make_response(jsonify({'person': person[0]}));
+    #response.headers['Access-Control-Allow-Origin'] = '*';
+    #response.headers['Access-Control-Allow-Methods'] = 'GET';
+    #return response;
+    return jsonify({'person': person[0]});
 
+# curl -i -X POST --data "name=newkedacom" http://localhost:5000/restful/person
 @app.route('/restful/person', methods=['POST'])
 def create_person():
     #if not request.json or not 'name' in request.json:
@@ -82,11 +85,12 @@ def create_person():
         'done': False
     }
     persons.append(person);
-    response = make_response(jsonify({'person': person}), 201);
-    response.headers['Access-Control-Allow-Origin'] = '*';
-    response.headers['Access-Control-Allow-Methods'] = 'POST';
-    return response;
+    #response = make_response(jsonify({'person': person}), 201);
+    #response.headers['Access-Control-Allow-Origin'] = '*';
+    #response.headers['Access-Control-Allow-Methods'] = 'POST';
+    return make_response(jsonify({'person': person}), 201);
 
+# curl -i -X POST --data "name=newkedacom" http://localhost:5000/restful/person
 @app.route('/restful/person/<int:id>', methods=['PUT'])
 def update_person(id):
     app.logger.info('enter update_person');
@@ -108,11 +112,11 @@ def update_person(id):
     person[0]['url'] = request.form.get('url', person[0]['url'])
     person[0]['done'] = request.form.get('done', person[0]['done'])
 	
-    response = make_response(jsonify({'person': person[0]}));
-    response.headers['Access-Control-Allow-Origin'] = '*';
-    response.headers['Access-Control-Allow-Methods'] = 'PUT';
-    return response;
-    #return 
+    #response = make_response(jsonify({'person': person[0]}));
+    #response.headers['Access-Control-Allow-Origin'] = '*';
+    #response.headers['Access-Control-Allow-Methods'] = 'PUT';
+    #return response;
+    return make_response(jsonify({'person': person[0]}));
 
 # curl -i -X DELETE http://localhost:5000/restful/person/2
 @app.route('/restful/person/<int:id>', methods=['DELETE'])
@@ -122,11 +126,11 @@ def delete_person(id):
     if len(person) == 0:
         abort(404)
     persons.remove(person[0])
-    response = make_response(jsonify({'result': True}));
-    response.headers['Access-Control-Allow-Origin'] = '*';
-    response.headers['Access-Control-Allow-Methods'] = 'DELETE';
-    return response;
-    #return jsonify({'result': True})
+    #response = make_response(jsonify({'result': True}));
+    #response.headers['Access-Control-Allow-Origin'] = '*';
+    #response.headers['Access-Control-Allow-Methods'] = 'DELETE';
+    #return response;
+    return jsonify({'result': True})
 
 @app.errorhandler(404)
 def not_found(error):
